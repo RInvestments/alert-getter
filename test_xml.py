@@ -1,3 +1,5 @@
+## Given an XML file (from google alerts RSS) print out its data
+
 from bs4 import BeautifulSoup
 import urlparse
 import re
@@ -11,7 +13,7 @@ def strip_tags( raw_text ):
     data = re.sub( r'<.*?>', '', raw_text )
     return data
 
-XML_FILE = 'alerts_db/alert_/1652318492771626812.xml'
+XML_FILE = 'alerts_db/alert_2/12484028930340680223_1652318492771626812.xml'
 
 soup = BeautifulSoup( open(XML_FILE).read() , "lxml")
 
@@ -31,12 +33,12 @@ for entry in all_entries:
 
     print 'title : ', title
     print 'id    : ', news_id
-    print 'published : ', published_on
-    print 'updated_on: ', updated_on
-    print 'one_line  : ', one_line
+    #print 'published : ', published_on
+    #print 'updated_on: ', updated_on
+    #print 'one_line  : ', one_line
 
     raw_url = entry.find( 'link')['href']
     # print 'raw   : ', raw_url
 
     news_url = strip_google_redirect( raw_url )
-    print '\nnews_url: ', news_url
+    #print '\nnews_url: ', news_url

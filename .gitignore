@@ -1,0 +1,4 @@
+alerts_db/*
+*.pyc
+html/*
+*.swp
