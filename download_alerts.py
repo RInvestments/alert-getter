@@ -17,8 +17,8 @@ tcol = TerminalColors.bcolors()
 # All printing functions
 import utility_functions as uf
 
-CSV_FILENAME = 'feeds_list.csv' 
-ALERTS_DB = 'alerts_db/alert_2' #TODO: current time as string append
+CSV_FILENAME = 'feeds_list.csv'
+ALERTS_DB = 'alerts_db/alert_3' #TODO: current time as string append
 
 
 

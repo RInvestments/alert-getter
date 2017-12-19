@@ -1,9 +1,20 @@
 
 import TerminalColors
 tcol = TerminalColors.bcolors()
+import re
+import urlparse
 
 #################### Printer functions ################
 MY_NAME = ''
+
+def strip_google_redirect( raw_url ):
+    parsed = urlparse.urlparse(raw_url)
+    xurl=urlparse.parse_qs(parsed.query)['url']
+    return xurl[0]
+
+def strip_tags( raw_text ):
+    data = re.sub( r'<.*?>', '', raw_text )
+    return data
 
 def _printer( txt ):
     print tcol.OKBLUE, 'download_alerts :', tcol.ENDC, txt
