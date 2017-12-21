@@ -104,7 +104,10 @@ class AlertDownloader:
         # fp_out = open( output_csv, 'w' )
         out_list = []
         for li in all_li:
-            tag_text = li.find( "div", {"class":"query_div"} ).get_text().strip()
+            try:
+                tag_text = li.find( "div", {"class":"query_div"} ).get_text().strip()
+            except:
+                continue
             rss_url = li.find( "a" )['href']
 
             self.__debug( '---', lvl=2 )

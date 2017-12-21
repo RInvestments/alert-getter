@@ -17,12 +17,14 @@ import utility_functions as uf
 
 
 # url = 'http://eng.belta.by/society/view/belarusian-buyers-of-geely-cars-promised-subsidies-107864-2017/'
+# url = 'https://weekherald.com/2017/12/20/somewhat-favorable-media-coverage-somewhat-unlikely-to-impact-huaneng-power-international-hnp-stock-price.html'
 # g = Goose()
 # article = g.extract( url=url )
-
-#article.title
-#article.cleaned_text
-
+#
+# article.title
+# article.cleaned_text
+# code.interact( local=locals() )
+# quit()
 #
 # Setup MongoDB
 try:
