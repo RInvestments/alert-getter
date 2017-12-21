@@ -3,6 +3,8 @@ import TerminalColors
 tcol = TerminalColors.bcolors()
 import re
 import urlparse
+import signal
+import time
 
 #################### Printer functions ################
 MY_NAME = ''
@@ -40,3 +42,24 @@ def _error( txt ):
 def _report_time( txt ):
     print tcol.OKBLUE, 'download_alerts (time) :', tcol.ENDC, '%4.2f sec' %(txt)
 ########################################################
+
+
+
+
+class Timeout():
+    """Timeout class using ALARM signal."""
+    class Timeout(Exception):
+        pass
+
+    def __init__(self, sec):
+        self.sec = sec
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(self.sec)
+
+    def __exit__(self, *args):
+        signal.alarm(0)    # disable alarm
+
+    def raise_timeout(self, *args):
+        raise Timeout.Timeout()
