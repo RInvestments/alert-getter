@@ -315,7 +315,8 @@ class AlertDownloader:
 
 
 if __name__ == "__main__":
-    ob = AlertDownloader( ALERTS_DB='alerts_db/alert_5', feeds_list_html='google-alerts.html', verbosity=3 )
+    date_str = datetime.today().strftime( '%Y%m%d' )
+    ob = AlertDownloader( ALERTS_DB='alerts_db/alert_%s' %(date_str), feeds_list_html='google-alerts.html', verbosity=3 )
     # ob = AlertDownloader( feeds_list_csv='feeds_list.csv', verbosity=3 )
     # ob = AlertDownloader( feeds_list_html='/home/mpkuse/Music/a.html', verbosity=3 )
 
