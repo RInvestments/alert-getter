@@ -2,3 +2,4 @@ alerts_db/*
 *.pyc
 html/*
 *.swp
+google-alerts_files/*

@@ -35,6 +35,7 @@ import utility_functions as uf
 
 
 class AlertDownloader:
+    #TODO: redirect prints to a file.
     def __debug( self, msg, lvl=0 ):
         if lvl in self.verbosity:
             print tcol.WARNING, '[DEBUG=%d] %s' %(lvl,msg) , tcol.ENDC
@@ -51,9 +52,6 @@ class AlertDownloader:
         self.verbosity = range(verbosity)
         self.ALERTS_DB = ALERTS_DB
 
-        # Setup DB access and file accesses
-        self.client = pymongo.MongoClient()
-        self.db = self.client.sun_dance
 
         ########
         if feeds_list_html is not None and feeds_list_csv is None:
@@ -104,7 +102,10 @@ class AlertDownloader:
         # fp_out = open( output_csv, 'w' )
         out_list = []
         for li in all_li:
-            tag_text = li.find( "div", {"class":"query_div"} ).get_text().strip()
+            try:
+                tag_text = li.find( "div", {"class":"query_div"} ).get_text().strip()
+            except:
+                continue
             rss_url = li.find( "a" )['href']
 
             self.__debug( '---', lvl=2 )
@@ -164,6 +165,16 @@ class AlertDownloader:
             # print 'download : ', url
             self.__printerG( 'alert_id=%s ; user=%s ; tag=%s' %(alert_id, alert_user_id, tag) )
 
+            # Don't download if xml already exists for this alert
+            fname = '%s/%s_%s.xml' %(ALERTS_DB, alert_user_id, alert_id)
+            if os.path.isfile( fname ):
+                self.__debug( 'File already exists. Not downloading : %s' %(fname), lvl=0 )
+                self.__printerB( 'File already exists. Not downloading : %s' %(fname) )
+
+                continue
+
+
+
             self.__debug( 'URL:%s' %(url), lvl=0 )
             startTime = time.time()
             response = urllib2.urlopen( url )
@@ -171,7 +182,6 @@ class AlertDownloader:
 
 
             # Save to file
-            fname = '%s/%s_%s.xml' %(ALERTS_DB, alert_user_id, alert_id)
             self.__debug( 'Save to : %s' %(fname), lvl=0 )
             self.__printerB( 'Save to : %s' %(fname) )
             fp = open( fname, 'w' )
@@ -179,7 +189,11 @@ class AlertDownloader:
             print 'Done in %4.2fs' %( time.time() - startTime )
 
 
-    def insert_into_db( self ):
+    def insert_into_db( self, db ):
+        """ Need to provide link to the database. For example
+        db should be conn.sun_dance
+        """
+        self.db = db
         ALERTS_DB = self.ALERTS_DB
 
         ntotal_fails = 0
@@ -223,8 +237,9 @@ class AlertDownloader:
                     n_fails += 1
                     ntotal_fails += 1
 
-            self.__printerG( 'n_success: %d; n_fails: %d' %(n_success, n_fails))
-        self.__printerG( 'ntotal_success: %d; ntotal_fails: %d' %(ntotal_success, ntotal_fails))
+            self.__printerG( 'mongodb inserts:: n_success: %d; n_fails: %d' %(n_success, n_fails))
+
+        self.__printerG( 'mongodb inserts:: ntotal_success: %d; ntotal_fails: %d' %(ntotal_success, ntotal_fails))
 
     def _parse_alert_xml( self, XML_FILE ):
         soup = BeautifulSoup( open(XML_FILE).read() , "lxml")
