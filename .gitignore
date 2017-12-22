@@ -3,3 +3,5 @@ alerts_db/*
 html/*
 *.swp
 google-alerts_files/*
+google-alerts*
+feed_list.csv*
