@@ -79,6 +79,11 @@ for d in db.news_data.find({ "full_article_text": {"$exists": False} } ):
     print 'Alert on   :', d['alert_title'] #consider not printering this
     print 'news_id    :', d['news_id'] #consider not printering
 
+    new_data = {}
+    new_data['full_article_title'] = ""
+    new_data['full_article_text'] = ""
+    new_data['full_article_domain'] = ""
+    new_data['full_article_publish_date'] = ""
     try:
         with uf.Timeout(5):
             article = g.extract( url=d['url'])
@@ -87,7 +92,7 @@ for d in db.news_data.find({ "full_article_text": {"$exists": False} } ):
             # print article.cleaned_text
             print 'article.publish_date:', article.publish_date
 
-            new_data = {}
+
             new_data['full_article_title'] = article.title
             new_data['full_article_text'] = article.cleaned_text
             new_data['full_article_domain'] = article.domain
@@ -95,11 +100,9 @@ for d in db.news_data.find({ "full_article_text": {"$exists": False} } ):
             # code.interact( local=locals() )
     except uf.Timeout.Timeout:
         print '[ERROR] Timeout. This item (uuid=%s) will be empty' %( d['uuid'] )
-        new_data = {}
-        new_data['full_article_title'] = ""
-        new_data['full_article_text'] = ""
-        new_data['full_article_domain'] = ""
-        new_data['full_article_publish_date'] = ""
+    except:
+        print 'py-goose retrival failed!'
+
 
     db.news_data.find_one_and_update( {"_id": d['_id']}, { "$set": new_data } )
     uf._printer_( 'Done in %4.2fs' %(time.time() - startTime) )
