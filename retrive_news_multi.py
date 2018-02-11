@@ -2,6 +2,8 @@
     are retrived, this script will also fetch the text data (cleaned with py-goose)
     from the URLs. It is all stored inside a mongodb
 
+    Runs the code every day auto-magically
+
     Author  : Manohar Kuse <mpkuse@connect.ust.hk>
     Created : 22nd Dec, 2017 (Winter Solstice)
 """
@@ -34,6 +36,9 @@ def init_mongodb():
 
 
 def get_news_from_url():
+    """ This function finds all news items from mongodb which do not have a
+        full text. It then downloads full text for all such items"""
+
     # Parser setup
     g = Goose({ 'browser_user_agent': 'Mozilla'})
 
@@ -87,30 +92,44 @@ def get_news_from_url():
 
 
 db = init_mongodb()
+run = 0
+while True:
+    startTimerun = time.time()
 
-#
-# Retrive google-alerts
-#
-date_str = datetime.today().strftime( '%Y%m%d' )
-ob = AlertDownloader( ALERTS_DB='alerts_db/Xalert_%s' %(date_str), feeds_list_html='google-alerts.html', verbosity=3 )
-ob.download_alerts( )
-ob.insert_into_db( db )
-
-
-#
-# More Alert Sources (future work)
-#   As we have more sources for alerts, they will go here. These will basically
-#   put urls in mongodb in db.sun_dance.news_data. Try and have similar interface to
-#   google-alerts
-#
+    #
+    # Retrive google-alerts
+    #
+    date_str = datetime.today().strftime( '%Y%m%d' )
+    ob = AlertDownloader( ALERTS_DB='alerts_db/alert_%s' %(date_str), feeds_list_html='google-alerts.html', verbosity=1 )
+    ob.download_alerts( )
+    ob.insert_into_db( db )
 
 
+    #
+    # More Alert Sources (future work)
+    #   As we have more sources for alerts, they will go here. These will basically
+    #   put urls in mongodb in db.sun_dance.news_data. Try and have similar interface to
+    #   google-alerts
+    #
 
-#
-# URL Loop - Loop over all the items in mongodb which do not have full text of
-#   articles
-#
-get_news_from_url()
+
+
+    #
+    # URL Loop - Loop over all the items in mongodb which do not have full text of
+    #   articles
+    #
+    uf._printer_G( '+++++\n +++++ Start www crawl\n +++++')
+    get_news_from_url()
+    run_done_in = time.time() - startTimerun
+    uf._printer_( 'Run#%d completed in %4.2f sec on %s' %(run, run_done_in, str(datetime.now()) ) )
+    run = run + 1
+    sleep_for = 86400 - run_done_in # 86400 = 24 * 60 * 60 (sec in 1 day)
+    if sleep_for > 0:
+        uf._printer_( 'Sleeping....zZzz for %4.2f sec' %(sleep_for))
+        time.sleep( sleep_for )
+
+
+
 quit()
 
 # Parser setup
