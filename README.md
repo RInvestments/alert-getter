@@ -9,7 +9,7 @@ retrive raw text from those URLs.
 Manohar Kuse <mpkuse@ust.hk>
 
 ## How to run
-Setup a few RSS alerts in google scholar. Just Ctrl+S  https://www.google.com/alerts from
+Setup a few RSS alerts in google alerts. Just Ctrl+S  https://www.google.com/alerts from
 browser (I used chrome) in this folder with html file name as google-alerts.html.
 You can configure a few params from the file `retrive_news_multi.py`.
 
