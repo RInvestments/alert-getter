@@ -12,6 +12,7 @@ import pymongo
 import json
 from datetime import datetime
 import shutil
+import os
 
 from goose import Goose
 import code
@@ -32,11 +33,12 @@ repeat_every_sec = 86400 # 86400 = 24 * 60 * 60 (sec in 1 day)
 def init_mongodb():
     # Setup MongoDB
     try:
+        mongodb_uri = os.environ['MONGODB_NEWSRETRIVER_URI']
         conn = pymongo.MongoClient()
-        print 'MongoDB Connected!'
+        print 'MongoDB Connected!', mongodb_uri
         db = conn.sun_dance
         return db
-    except e:
+    except Exception as e:
         print 'Failed to connect to mongodb: ', str(e)
         quit()
 
