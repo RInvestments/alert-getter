@@ -34,7 +34,7 @@ def init_mongodb():
     # Setup MongoDB
     try:
         mongodb_uri = os.environ['MONGODB_NEWSRETRIVER_URI']
-        conn = pymongo.MongoClient()
+        conn = pymongo.MongoClient(mongodb_uri)
         print 'MongoDB Connected!', mongodb_uri
         db = conn.sun_dance
         return db
